@@ -15,3 +15,7 @@ type LoginInput struct {
 type LoginByName struct {
 	Name string `json:"name" binding:"required"`
 }
+
+type CheckEmailInput struct {
+	Email string `json:"email" binding:"required,email"`
+}
