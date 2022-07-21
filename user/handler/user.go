@@ -170,9 +170,10 @@ func (h *userHandler) UploadAvatar(c *gin.Context) {
 		return
 	}
 
-	pathimages := "images/" + file.Filename
+	//fmt.Println("pathimages: ", pathimages)
 
-	fmt.Println("pathimages: ", pathimages)
+	userID := 1
+	pathimages := fmt.Sprintf("images/%d-%s", userID, file.Filename)
 
 	err = c.SaveUploadedFile(file, pathimages)
 	if err != nil {
@@ -182,7 +183,6 @@ func (h *userHandler) UploadAvatar(c *gin.Context) {
 		return
 	}
 
-	userID := 1
 	_, err = h.userService.SaveAvatar(userID, pathimages)
 	if err != nil {
 		data := gin.H{"is_uploaded": false}
