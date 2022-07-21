@@ -159,3 +159,40 @@ func (h *userHandler) CheckEmailAvailability(c *gin.Context) {
 	c.JSON(http.StatusUnprocessableEntity, response_helper)
 
 }
+
+func (h *userHandler) UploadAvatar(c *gin.Context) {
+
+	file, err := c.FormFile("avatar")
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		response_helper := helper.APIResponse("Failed to upload avatar image 1", http.StatusBadRequest, "error", data)
+		c.JSON(http.StatusBadRequest, response_helper)
+		return
+	}
+
+	pathimages := "images/" + file.Filename
+
+	fmt.Println("pathimages: ", pathimages)
+
+	err = c.SaveUploadedFile(file, pathimages)
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		response_helper := helper.APIResponse("Failed to upload avatar image 2", http.StatusBadRequest, "error", data)
+		c.JSON(http.StatusBadRequest, response_helper)
+		return
+	}
+
+	userID := 1
+	_, err = h.userService.SaveAvatar(userID, pathimages)
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		response_helper := helper.APIResponse("Failed to upload avatar image 3", http.StatusBadRequest, "error", data)
+		c.JSON(http.StatusBadRequest, response_helper)
+		return
+	}
+
+	data := gin.H{"is_uploaded": true}
+	response_helper := helper.APIResponse("avatar succesfully uploaded", http.StatusOK, "success", data)
+	c.JSON(http.StatusOK, response_helper)
+
+}
