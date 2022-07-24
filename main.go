@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"golang-campaign/user"
+	"golang-campaign/user/auth"
 	"golang-campaign/user/handler"
 	"log"
 
@@ -24,10 +26,13 @@ func main() {
 
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
+	authService := auth.NewService()
 
 	//userService.SaveAvatar(1, "images/1-profile.png")
 
-	userHandler := handler.NewUserHandler(userService)
+	fmt.Println(authService.GenerateToken(1001))
+
+	userHandler := handler.NewUserHandler(userService, authService)
 
 	router := gin.Default()
 

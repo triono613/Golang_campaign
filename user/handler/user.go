@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"golang-campaign/user"
+	"golang-campaign/user/auth"
 	"golang-campaign/user/helper"
 	"net/http"
 
@@ -11,10 +12,11 @@ import (
 
 type userHandler struct {
 	userService user.Service
+	authService auth.Service
 }
 
-func NewUserHandler(userService user.Service) *userHandler {
-	return &userHandler{userService}
+func NewUserHandler(userService user.Service, authService auth.Service) *userHandler {
+	return &userHandler{userService, authService}
 }
 
 func (h *userHandler) RegisterUser(c *gin.Context) {
@@ -43,7 +45,14 @@ func (h *userHandler) RegisterUser(c *gin.Context) {
 		return
 	}
 
-	formatter := user.FormatUser(newUser, "jwtToken")
+	token, err := h.authService.GenerateToken(newUser.ID)
+	if err != nil {
+		response := helper.APIResponse("Register account failed", http.StatusUnprocessableEntity, "error", err.Error())
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	formatter := user.FormatUser(newUser, token)
 	response_helper := helper.APIResponse("Account has been registered", http.StatusOK, "success", formatter)
 	c.JSON(http.StatusOK, response_helper)
 
@@ -83,7 +92,14 @@ func (h *userHandler) Login(c *gin.Context) {
 		return
 	}
 
-	formatter2 := user.FormatUser(loggedinUser, "jwtToken")
+	token, err := h.authService.GenerateToken(loggedinUser.ID)
+	if err != nil {
+		response := helper.APIResponse("Login failed", http.StatusUnprocessableEntity, "error", err.Error())
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	formatter2 := user.FormatUser(loggedinUser, token)
 	response_helper2 := helper.APIResponse("Successfully loggedin", http.StatusOK, "success", formatter2)
 
 	c.JSON(http.StatusOK, response_helper2)
