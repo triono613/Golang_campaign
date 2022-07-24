@@ -23,13 +23,8 @@ func (h *userHandler) RegisterUser(c *gin.Context) {
 
 	var input user.RegisterUserInput
 	err := c.ShouldBindJSON(&input)
+
 	if err != nil {
-
-		// var errors []string
-		// for _, e := range err.(validator.ValidationErrors) {
-		// 	errors = append(errors, e.Error())
-		// }
-
 		errors := helper.FormatValidationError(err)
 		errorMessage := gin.H{"error": errors}
 
@@ -186,9 +181,8 @@ func (h *userHandler) UploadAvatar(c *gin.Context) {
 		return
 	}
 
-	//fmt.Println("pathimages: ", pathimages)
-
-	userID := 1
+	currentUser := c.MustGet("currentUser").(user.User)
+	userID := currentUser.ID
 	pathimages := fmt.Sprintf("images/%d-%s", userID, file.Filename)
 
 	err = c.SaveUploadedFile(file, pathimages)
