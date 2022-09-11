@@ -82,7 +82,7 @@ func (h *userHandler) Login(c *gin.Context) {
 	if err2 != nil {
 		errorMessage2 := gin.H{"errors": err2.Error()}
 
-		response2 := helper.APIResponse("Login Failed", http.StatusUnprocessableEntity, "error", errorMessage2)
+		response2 := helper.APIResponse("Login Failed 2", http.StatusUnprocessableEntity, "error", errorMessage2)
 		c.JSON(http.StatusUnprocessableEntity, response2)
 		return
 	}

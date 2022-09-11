@@ -5,6 +5,7 @@ import (
 	"golang-campaign/user"
 	"golang-campaign/user/auth"
 	"golang-campaign/user/handler"
+	"golang-campaign/user/handler/campaigns"
 	"golang-campaign/user/helper"
 	"log"
 	"net/http"
@@ -19,7 +20,7 @@ import (
 func main() {
 	// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
 
-	dsn := "root:@tcp(127.0.0.1:3306)/golang_campaign?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:@tcp(127.0.0.1:3306)/campaign?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -28,23 +29,31 @@ func main() {
 
 	//fmt.Println("SQL Connection established")
 
+	campaignRepository := campaigns.NewRepository(db)
 	userRepository := user.NewRepository(db)
+
+	campaigns, err := campaignRepository.FindAll()
+
+	for _, campaigns := range campaigns {
+		fmt.Println(campaigns.Name)
+	}
+
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
 	token, err := authService.ValidateToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyfQ.GGvyPxIF-qtj9SFrDoHXpgIwRmYUKjpqh1BkysASSUk")
 	if err != nil {
-		fmt.Println("Error")
-		fmt.Println("Error")
-		fmt.Println("Error")
+		// fmt.Println("Error")
+		// fmt.Println("Error")
+		// fmt.Println("Error")
 	}
 	if token.Valid {
-		fmt.Println("Valid")
-		fmt.Println("Valid")
-		fmt.Println("Valid")
+		// fmt.Println("Valid")
+		// fmt.Println("Valid")
+		// fmt.Println("Valid")
 	} else {
-		fmt.Println("Invalid")
-		fmt.Println("Invalid")
-		fmt.Println("Invalid")
+		// fmt.Println("Invalid")
+		// fmt.Println("Invalid")
+		// fmt.Println("Invalid")
 	}
 
 	//userService.SaveAvatar(1, "images/1-profile.png")
