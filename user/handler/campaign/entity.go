@@ -1,8 +1,8 @@
-package campaigns
+package campaign
 
 import "time"
 
-type Campaigns struct {
+type Campaign struct {
 	ID               int
 	UserID           int
 	Name             string
@@ -15,9 +15,10 @@ type Campaigns struct {
 	Slug             string
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
+	CampaignImages   []CampaignImage
 }
 
-type CampaignsImage struct {
+type CampaignImage struct {
 	ID         int
 	CampaignID int
 	FileName   string

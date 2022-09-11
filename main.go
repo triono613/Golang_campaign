@@ -5,7 +5,7 @@ import (
 	"golang-campaign/user"
 	"golang-campaign/user/auth"
 	"golang-campaign/user/handler"
-	"golang-campaign/user/handler/campaigns"
+	"golang-campaign/user/handler/campaign"
 	"golang-campaign/user/helper"
 	"log"
 	"net/http"
@@ -20,7 +20,7 @@ import (
 func main() {
 	// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
 
-	dsn := "root:@tcp(127.0.0.1:3306)/campaign?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:@tcp(127.0.0.1:3306)/be_campaign?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -29,13 +29,17 @@ func main() {
 
 	//fmt.Println("SQL Connection established")
 
-	campaignRepository := campaigns.NewRepository(db)
+	campaignRepository := campaign.NewRepository(db)
 	userRepository := user.NewRepository(db)
 
 	campaigns, err := campaignRepository.FindAll()
 
 	for _, campaigns := range campaigns {
 		fmt.Println(campaigns.Name)
+		if len(campaigns.CampaignImages) > 0 {
+			fmt.Println(len(campaigns.CampaignImages))
+			fmt.Println(campaigns.CampaignImages[0].FileName)
+		}
 	}
 
 	userService := user.NewService(userRepository)
