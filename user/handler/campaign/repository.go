@@ -3,7 +3,7 @@ package campaign
 import "gorm.io/gorm"
 
 type Repository interface {
-	FindAll() []Campaign
+	FindAll() ([]Campaign, error)
 	FindByUserID(UserID int) ([]Campaign, error)
 }
 
@@ -16,14 +16,14 @@ func NewRepository(db *gorm.DB) *repository {
 }
 
 func (r *repository) FindAll() ([]Campaign, error) {
-	var campaign []Campaign
+	var campaignx []Campaign
 
-	err := r.db.Find(&campaign).Error
+	err := r.db.Find(&campaignx).Error
 	if err != nil {
-		return campaign, err
+		return campaignx, err
 	}
 
-	return campaign, nil
+	return campaignx, nil
 }
 
 func (r *repository) FindByUserID(UserID int) ([]Campaign, error) {
